@@ -20,3 +20,25 @@ from nltk.corpus import stopwords
 from string import punctuation
 
 sentences = sent_tokenize(text.lower())
+
+words = word_tokenize(text.lower())
+words
+_stopwords = set(stopwords.words('english') + list(punctuation))
+unwanted_words = set(('“', '”', '’'))
+relevant_words = [word for word in words if word not in _stopwords and word not in unwanted_words]
+
+from nltk.probability import FreqDist
+freq = FreqDist(relevant_words)
+from heapq import nlargest
+nlargest(10, freq, key=freq.get)
+
+from collections import defaultdict
+ranking=defaultdict(int)
+
+for i, sent in enumerate(sentences):
+    for w in word_tokenize(sent.lower()):
+        if w in freq:
+            ranking[i] += freq[w]
+            
+sents_idx = nlargest(4, ranking, key=ranking.get)
+sents_idx
